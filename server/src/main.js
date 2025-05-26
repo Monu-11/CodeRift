@@ -1,5 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import { db } from "./libs/db.js";
 import authRouter from "./routes/auth.route.js";
 import problemRouter from "./routes/problem.route.js";
@@ -15,6 +17,15 @@ async function main() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(cookieParser());
+
+  app.use(
+    cors({
+      origin: "http://localhost:5173/",
+      credentials: true,
+    })
+  );
 
   app.get("/", (req, res) => {
     res.send("Healthy");

@@ -29,7 +29,7 @@ export const verifyJWT = async (req, res, next) => {
       },
       select: {
         id: true,
-        image: true,
+        imageUrl: true,
         name: true,
         email: true,
         role: true,
@@ -49,7 +49,7 @@ export const verifyJWT = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Something went wrong in middleware",
       error,
     });
   }
