@@ -2,27 +2,27 @@ import express from "express";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import {
   addProblemToPlaylist,
-  createPlaylist,
-  deletePlaylist,
-  getAllListDetails,
+  createPlayList,
+  deletePlayList,
+  getPlayAllListDetails,
   getPlayListDetails,
   removeProblemFromPlaylist,
 } from "../controllers/playlist.controller.js";
 
 const router = express.Router();
 
-router.route("/").get(verifyJWT, getAllListDetails);
+router.route("/").get(verifyJWT, getPlayAllListDetails);
 
 router.route("/:playlistId").get(verifyJWT, getPlayListDetails);
 
-router.route("/create-playlist").post(verifyJWT, createPlaylist);
+router.route("/create-playlist").post(verifyJWT, createPlayList);
 
 router.route("/:playlistId/add-problem").post(verifyJWT, addProblemToPlaylist);
 
-router.route("/:playlistId").delete(verifyJWT, deletePlaylist);
+router.route("/:playlistId").delete(verifyJWT, deletePlayList);
 
 router
   .route("/:playlistId/remove-problem")
-  .get(verifyJWT, removeProblemFromPlaylist);
+  .delete(verifyJWT, removeProblemFromPlaylist);
 
 export default router;

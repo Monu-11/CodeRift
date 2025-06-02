@@ -1,6 +1,6 @@
 import { db } from "../libs/db.js";
 
-const createPlaylist = async (req, res) => {
+const createPlayList = async (req, res) => {
   try {
     const { name, description } = req.body;
 
@@ -25,9 +25,9 @@ const createPlaylist = async (req, res) => {
   }
 };
 
-const getAllListDetails = async (req, res) => {
+const getPlayAllListDetails = async (req, res) => {
   try {
-    const playlists = await db.playlist.findMany({
+    const playLists = await db.playlist.findMany({
       where: {
         userId: req.user.id,
       },
@@ -43,7 +43,7 @@ const getAllListDetails = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Playlist fetched successfully",
-      playlists,
+      playLists,
     });
   } catch (error) {
     console.error("Error fetching playlist:", error);
@@ -54,7 +54,7 @@ const getAllListDetails = async (req, res) => {
 const getPlayListDetails = async (req, res) => {
   const { playlistId } = req.params;
   try {
-    const playlist = await db.playlist.findUnique({
+    const playList = await db.playlist.findUnique({
       where: {
         id: playlistId,
         userId: req.user.id,
@@ -68,13 +68,13 @@ const getPlayListDetails = async (req, res) => {
       },
     });
 
-    if (!playlist) {
+    if (!playList) {
       return res.status(404).json({ error: "Playlist not found" });
     }
     res.status(200).json({
       success: true,
       message: "Playlist fetched successfully",
-      playlist,
+      playList,
     });
   } catch (error) {
     console.error("Error fetching playlist:", error);
@@ -84,17 +84,17 @@ const getPlayListDetails = async (req, res) => {
 
 const addProblemToPlaylist = async (req, res) => {
   const { playlistId } = req.params;
-  const { problemIds } = req.body;
+  const { problemIds } = req.body; // Accept an array of problem IDs
 
   try {
     if (!Array.isArray(problemIds) || problemIds.length === 0) {
-      return res.status(400).json({ error: "Invalid or missing problemsId" });
+      return res.status(400).json({ error: "Invalid or missing problemIds" });
     }
 
     // Create records fro each problems in the playlist
-    const problemsInPlaylist = await db.problemsInPlaylist.createMany({
+    const problemsInPlaylist = await db.problemInPlaylist.createMany({
       data: problemIds.map((problemId) => ({
-        playlistId,
+        playListId: playlistId,
         problemId,
       })),
     });
@@ -105,12 +105,12 @@ const addProblemToPlaylist = async (req, res) => {
       problemsInPlaylist,
     });
   } catch (error) {
-    console.error("Error Adding problem in  playlist:", error);
-    res.status(500).json({ error: "Failed to adding problem in playlist" });
+    console.error("Error adding problems to playlist:", error.message);
+    res.status(500).json({ error: "Failed to add problems to playlist" });
   }
 };
 
-const deletePlaylist = async (req, res) => {
+const deletePlayList = async (req, res) => {
   const { playlistId } = req.params;
 
   try {
@@ -137,10 +137,10 @@ const removeProblemFromPlaylist = async (req, res) => {
 
   try {
     if (!Array.isArray(problemIds) || problemIds.length === 0) {
-      return res.status(400).json({ error: "Invalid or missing problemsId" });
+      return res.status(400).json({ error: "Invalid or missing problemIds" });
     }
 
-    const deletedProblem = await db.problemsInPlaylist.deleteMany({
+    const deletedProblem = await db.problemInPlaylist.deleteMany({
       where: {
         playlistId,
         problemId: {
@@ -161,10 +161,10 @@ const removeProblemFromPlaylist = async (req, res) => {
 };
 
 export {
-  createPlaylist,
-  getAllListDetails,
+  createPlayList,
+  getPlayAllListDetails,
   getPlayListDetails,
-  deletePlaylist,
+  deletePlayList,
   addProblemToPlaylist,
   removeProblemFromPlaylist,
 };
